@@ -47,7 +47,7 @@ public class AuditService {
         AuditLog auditLog = AuditLog.builder()
                 .actionType(actionType)
                 .entityType(entityType)
-                .relatedEntityId(entityId)
+                .relatedEntityId(entityId != null ? UUID.fromString(entityId) : null)
                 .performedByUser(performedByUser)
                 .performedByRole(performedByRole)
                 .description(description)
@@ -74,7 +74,7 @@ public class AuditService {
         AuditLog auditLog = AuditLog.builder()
                 .actionType(actionType)
                 .entityType(entityType)
-                .relatedEntityId(entityId)
+                .relatedEntityId(entityId != null ? UUID.fromString(entityId) : null)
                 .performedByUser(performedByUser)
                 .performedByRole(performedByRole)
                 .description(description)
@@ -154,7 +154,7 @@ public class AuditService {
                 auditLog.getId().toString(),
                 auditLog.getActionType(),
                 auditLog.getEntityType(),
-                auditLog.getRelatedEntityId(),
+                auditLog.getRelatedEntityId() != null ? auditLog.getRelatedEntityId().toString() : null,
                 auditLog.getPerformedByUser() != null ? auditLog.getPerformedByUser().getFullName() : "SYSTEM",
                 auditLog.getPerformedByRole(),
                 auditLog.getDescription(),
