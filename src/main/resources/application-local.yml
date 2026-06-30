@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5435/eclaims
     username: eclaims
-    password: eclaims
+    password: eclaims123
     driver-class-name: org.postgresql.Driver
 
 storage:

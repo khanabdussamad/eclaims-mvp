@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://postgres:5435/eclaims
+    url: jdbc:postgresql://postgres:5432/eclaims
     username: eclaims
     password: eclaims123
     driver-class-name: org.postgresql.Driver
@@ -9,13 +9,18 @@ spring:
       minimum-idle: 2
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
         format_sql: true
-        jdbc:
-          batch_size: 20
+        dialect_resolvers: org.hibernate.engine.jdbc.dialect.internal.StandardDialectResolver
+      javax:
+        persistence:
+          validation:
+            mode: none
+      jdbc:
+        batch_size: 20
   flyway:
     enabled: true
     locations: classpath:db/migration
