@@ -1,0 +1,120 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: eclaims-postgres
+    environment:
+      POSTGRES_DB: eclaims
+      POSTGRES_USER: eclaims
+      POSTGRES_PASSWORD: eclaims123
+    ports:
+      - "5435:5435"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - eclaims-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eclaims"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MinIO - S3-compatible object storage
+  minio:
+    image: minio/minio:latest
+    container_name: eclaims-minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/minio_data
+    command: server /minio_data --console-address ":9001"
+    networks:
+      - eclaims-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MinIO Create Bucket Init
+  minio-init:
+    image: minio/mc:latest
+    container_name: eclaims-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add myminio http://minio:9000 minioadmin minioadmin123 &&
+      /usr/bin/mc mb myminio/eclaims-documents --ignore-existing &&
+      exit 0
+      "
+    networks:
+      - eclaims-network
+
+  # MailHog - Email testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: eclaims-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - eclaims-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8025"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # eClaims Application
+  eclaims-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eclaims-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5435/eclaims
+      SPRING_DATASOURCE_USERNAME: eclaims
+      SPRING_DATASOURCE_PASSWORD: eclaims123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_PROFILES_ACTIVE: docker
+      MINIO_URL: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin123
+      MINIO_BUCKET: eclaims-documents
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
+      MAIL_USERNAME: test
+      MAIL_PASSWORD: test
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      mailhog:
+        condition: service_healthy
+    networks:
+      - eclaims-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  eclaims-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  minio_data:
+

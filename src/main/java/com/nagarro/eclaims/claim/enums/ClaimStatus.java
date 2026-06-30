@@ -1,0 +1,21 @@
+package com.nagarro.eclaims.claim.enums;
+
+public enum ClaimStatus {
+    DRAFT,
+    SUBMITTED,
+    CASE_ASSIGNED,
+    SURVEYOR_ASSIGNED,
+    SURVEY_IN_PROGRESS,
+    SURVEY_SUBMITTED,
+    ADJUSTOR_REVIEW,
+    APPROVED,
+    REJECTED,
+    WORKSHOP_SELECTED,
+    REPAIR_IN_PROGRESS,
+    REPAIR_COMPLETED,
+    PAYMENT_PENDING,
+    PAYMENT_COMPLETED,
+    CLOSED,
+    CANCELLED
+}
+

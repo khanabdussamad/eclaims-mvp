@@ -1,0 +1,28 @@
+-- V1__create_rbac_schema.sql
+
+CREATE TABLE roles (
+    id UUID PRIMARY KEY,
+    code VARCHAR(64) NOT NULL UNIQUE,
+    name VARCHAR(128) NOT NULL,
+    description TEXT,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE permissions (
+    id UUID PRIMARY KEY,
+    code VARCHAR(128) NOT NULL UNIQUE,
+    name VARCHAR(128) NOT NULL,
+    description TEXT,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE role_permissions (
+    role_id UUID NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
+    permission_id UUID NOT NULL REFERENCES permissions(id) ON DELETE CASCADE,
+    PRIMARY KEY (role_id, permission_id)
+);
+

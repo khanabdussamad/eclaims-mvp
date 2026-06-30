@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:postgresql:16:///eclaims
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+logging:
+  level:
+    root: WARN
+    com.nagarro.eclaims: INFO
+

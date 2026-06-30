@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:15:///testdb
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  test:
+    database:
+      replace: any
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+logging:
+  level:
+    root: INFO
+    com.nagarro.eclaims: DEBUG
+    org.hibernate: WARN
+    org.springframework: WARN
+
+server:
+  servlet:
+    context-path: /api/v1
+

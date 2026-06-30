@@ -1,0 +1,13 @@
+package com.nagarro.eclaims.workflow.enums;
+
+public enum WorkflowPrecondition {
+    SURVEYOR_ASSIGNED,
+    SURVEY_COMPLETED,
+    ADJUSTOR_ASSIGNED,
+    REPAIR_WORKSHOP_ASSIGNED,
+    PAYMENT_COMPLETED,
+    DOCUMENTS_UPLOADED,
+    APPROVAL_REQUIRED,
+    FINAL_INVOICE_RECEIVED
+}
+

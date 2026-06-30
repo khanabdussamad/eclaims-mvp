@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: eclaims
+  profiles:
+    active: local
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQL92Dialect
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+  mail:
+    host: mailhog
+    port: 1025
+    username: ""
+    password: ""
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: never
+    include-exception: false
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:change-this-secret-for-local-only}
+    access-token-expiration-minutes: 60
+
+storage:
+  provider: minio
+  minio:
+    endpoint: http://minio:9000
+    access-key: minioadmin
+    secret-key: minioadmin
+    bucket: eclaims-documents
+
+mail:
+  from: no-reply@ycompany.com
+
+logging:
+  level:
+    root: INFO
+    com.nagarro.eclaims: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
